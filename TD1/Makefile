@@ -10,6 +10,8 @@ DIRNAME  = $(shell basename $$PWD)
 BACKUP   = $(shell date +`basename $$PWD`-%m.%d.%H.%M.tgz)
 STDNAME  = $(DIRNAME).tgz
 
+
+
 all : $(BIN)
 
 $(BIN) : $(OBJ)
@@ -34,4 +36,5 @@ tar : clean
 	@echo "TAR"
 	@echo "**************************"
 	cd .. && tar cvfz $(BACKUP) $(DIRNAME)
+
 

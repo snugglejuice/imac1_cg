@@ -25,58 +25,13 @@ void resize(int width , int height ){
 }
 
 
-void drawpoint(int x,int y){
-  printf("Dessine un point\n");
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_POINTS);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
 
-
-void drawline(int x,int y){
-  printf("Dessine une ligne\n");
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_LINES);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
-
-
-void drawtriangle(int x,int y){
-  printf("Dessine un triangle\n");
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_TRIANGLES);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
-
-void draw(int x,int y,int key){
-  printf("Dessine avec %d\n",key);
-  if (key == 112){
-    drawpoint(x,y);
-  }
-  if (key == 108){
-    drawline(x,y);
-  }
-  if (key == 116){
-    drawtriangle(x,y);
-  }
-}
-
-void chooseColor(){
-}
  
 int main(int argc, char** argv) {
   
   float R=0;
   float V=0;
   float B=0;
-
-  int key=112;
 
     /* Initialisation de la SDL */
     if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -123,12 +78,26 @@ int main(int argc, char** argv) {
 
                 /* Clic souris */
                 case SDL_MOUSEBUTTONUP:
-		  printf("booom\n");
-		    draw(e.button.x,e.button.y,key);
+                   printf("clic en (%d, %d)\n", e.button.x, e.button.y);
+	   
+		     R = (e.button.x%255);
+		     V = (e.button.y%255);
+		     B = 0;
+
+		     printf("R = %f & V = %f\n",R/255,V/255);
+
+		 
                     break;
 
 		/* Déplacement souris */
-	        case SDL_MOUSEMOTION:	    
+	        case SDL_MOUSEMOTION:
+		  
+	   
+		    R = (e.button.x%255);
+		    V = (e.button.y%255);
+		    B = 0;
+
+		    		    
                     break;
 
 	        /* Redimentionnement fenêtre */
@@ -136,7 +105,9 @@ int main(int argc, char** argv) {
 	        case SDL_VIDEORESIZE:
 		  WINDOW_WIDTH = e.resize.w;
 		  WINDOW_HEIGHT = e.resize.h;
-		  resize(WINDOW_WIDTH,WINDOW_HEIGHT);  
+		  resize(WINDOW_WIDTH,WINDOW_HEIGHT);
+     
+		  
 		  break;
 	      
 	      
@@ -144,14 +115,9 @@ int main(int argc, char** argv) {
                 /* Touche clavier */
                 case SDL_KEYDOWN:
 		  /*Touche q pour quitter*/
-		  key = e.key.keysym.sym;
 		  if (e.key.keysym.sym == 113){
 		    loop = 0;
 		    break;
-		  }
-		   if (e.key.keysym.sym == 99){
-		     chooseColor();
-		     break;
 		  }
                     printf("touche pressée (code = %d)\n", e.key.keysym.sym);
                     break;
