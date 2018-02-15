@@ -24,7 +24,9 @@ void resize(int width , int height ){
   SDL_SetVideoMode(width,height,BIT_PER_PIXEL,SDL_OPENGL|SDL_RESIZABLE);
 }
 
-void draw(int x,int y){
+
+void drawpoint(int x,int y){
+
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
   glColor3ub(255,0,0);
   glBegin(GL_POINTS);
@@ -34,6 +36,7 @@ void draw(int x,int y){
 
 
 void drawline(int x,int y){
+  
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
   glColor3ub(255,0,0);
   glBegin(GL_LINES);
@@ -43,6 +46,7 @@ void drawline(int x,int y){
 
 
 void drawtriangle(int x,int y){
+  
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
   glColor3ub(255,0,0);
   glBegin(GL_TRIANGLES);
@@ -50,12 +54,29 @@ void drawtriangle(int x,int y){
   glEnd();
 }
 
+void draw(int x,int y,int key){
+ 
+  if (key == 112){
+    drawpoint(x,y);
+  }
+  if (key == 108){
+    drawline(x,y);
+  }
+  if (key == 116){
+    drawtriangle(x,y);
+  }
+}
+
+void chooseColor(){
+}
  
 int main(int argc, char** argv) {
   
   float R=0;
   float V=0;
   float B=0;
+
+  int key=112;
 
     /* Initialisation de la SDL */
     if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -71,7 +92,7 @@ int main(int argc, char** argv) {
     
     /* Titre de la fenêtre */
     SDL_WM_SetCaption("CHANGEMENT DU TITRE :D", NULL);
-
+   
     /* Boucle d'affichage */
     int loop = 1;
     while(loop) {
@@ -80,8 +101,8 @@ int main(int argc, char** argv) {
         Uint32 startTime = SDL_GetTicks();
         
         /* Placer ici le code de dessin */
-
-	//glClearColor(R/255,V/255,B,1);
+      
+	glClearColor(R/255,V/255,B,1);
 	
         /* Echange du front et du back buffer : mise à jour de la fenêtre */
         SDL_GL_SwapBuffers();
@@ -102,26 +123,12 @@ int main(int argc, char** argv) {
 
                 /* Clic souris */
                 case SDL_MOUSEBUTTONUP:
-                  //  printf("clic en (%d, %d)\n", e.button.x, e.button.y);
-	   
-		  //   R = (e.button.x%255);
-		  // V = (e.button.y%255);
-		  //  B = 0;
-
-		  //  printf("R = %f & V = %f\n",R/255,V/255);
-
-		    draw(e.button.x,e.button.y);
+		  
+		    draw(e.button.x,e.button.y,key);
                     break;
 
 		/* Déplacement souris */
-	        case SDL_MOUSEMOTION:
-		  
-	   
-		  //  R = (e.button.x%255);
-		  //  V = (e.button.y%255);
-		  //  B = 0;
-
-		    		    
+	        case SDL_MOUSEMOTION:	    
                     break;
 
 	        /* Redimentionnement fenêtre */
@@ -129,9 +136,7 @@ int main(int argc, char** argv) {
 	        case SDL_VIDEORESIZE:
 		  WINDOW_WIDTH = e.resize.w;
 		  WINDOW_HEIGHT = e.resize.h;
-		  resize(WINDOW_WIDTH,WINDOW_HEIGHT);
-     
-		  
+		  resize(WINDOW_WIDTH,WINDOW_HEIGHT);  
 		  break;
 	      
 	      
@@ -139,9 +144,14 @@ int main(int argc, char** argv) {
                 /* Touche clavier */
                 case SDL_KEYDOWN:
 		  /*Touche q pour quitter*/
+		  key = e.key.keysym.sym;
 		  if (e.key.keysym.sym == 113){
 		    loop = 0;
 		    break;
+		  }
+		   if (e.key.keysym.sym == 99){
+		     chooseColor();
+		     break;
 		  }
                     printf("touche pressée (code = %d)\n", e.key.keysym.sym);
                     break;

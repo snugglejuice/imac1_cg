@@ -24,31 +24,7 @@ void resize(int width , int height ){
   SDL_SetVideoMode(width,height,BIT_PER_PIXEL,SDL_OPENGL|SDL_RESIZABLE);
 }
 
-void draw(int x,int y){
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_POINTS);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
 
-
-void drawline(int x,int y){
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_LINES);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
-
-
-void drawtriangle(int x,int y){
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
-  glColor3ub(255,0,0);
-  glBegin(GL_TRIANGLES);
-  glVertex2f(-1+2.*x/WINDOW_WIDTH,-(-1+2.*y/WINDOW_HEIGHT));
-  glEnd();
-}
 
  
 int main(int argc, char** argv) {
@@ -71,7 +47,7 @@ int main(int argc, char** argv) {
     
     /* Titre de la fenêtre */
     SDL_WM_SetCaption("CHANGEMENT DU TITRE :D", NULL);
-
+    glClear(GL_COLOR_BUFFER_BIT);
     /* Boucle d'affichage */
     int loop = 1;
     while(loop) {
@@ -80,8 +56,8 @@ int main(int argc, char** argv) {
         Uint32 startTime = SDL_GetTicks();
         
         /* Placer ici le code de dessin */
-
-	//glClearColor(R/255,V/255,B,1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(R/255,V/255,B,1);
 	
         /* Echange du front et du back buffer : mise à jour de la fenêtre */
         SDL_GL_SwapBuffers();
@@ -102,24 +78,24 @@ int main(int argc, char** argv) {
 
                 /* Clic souris */
                 case SDL_MOUSEBUTTONUP:
-                  //  printf("clic en (%d, %d)\n", e.button.x, e.button.y);
+                   printf("clic en (%d, %d)\n", e.button.x, e.button.y);
 	   
-		  //   R = (e.button.x%255);
-		  // V = (e.button.y%255);
-		  //  B = 0;
+		     R = (e.button.x%255);
+		     V = (e.button.y%255);
+		     B = 0;
 
-		  //  printf("R = %f & V = %f\n",R/255,V/255);
+		     printf("R = %f & V = %f\n",R/255,V/255);
 
-		    draw(e.button.x,e.button.y);
+		 
                     break;
 
 		/* Déplacement souris */
 	        case SDL_MOUSEMOTION:
 		  
 	   
-		  //  R = (e.button.x%255);
-		  //  V = (e.button.y%255);
-		  //  B = 0;
+		    R = (e.button.x%255);
+		    V = (e.button.y%255);
+		    B = 0;
 
 		    		    
                     break;

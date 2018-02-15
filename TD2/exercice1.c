@@ -7,6 +7,8 @@
 
 #include "list.h"
 
+/*EXERCICE 1*/
+
 static unsigned int WINDOW_WIDTH = 1024;
 static unsigned int WINDOW_HEIGHT = 748;
 
@@ -29,6 +31,7 @@ static const unsigned int NB_COLORS = sizeof(COLORS) / (3 * sizeof(unsigned char
 void reshape();
 void setVideoMode();
 void drawColorSelectionView();
+void AddPointLoop(PointLink* link, PointList* list);
 
 int main(int argc, char** argv) {
   if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -37,7 +40,7 @@ int main(int argc, char** argv) {
   }
   
   setVideoMode();
-  SDL_WM_SetCaption("My photoshop !", NULL);
+  SDL_WM_SetCaption("Ligne Brisée (APPUYER SUR L)", NULL);
   
   unsigned int currentColor = 1; /* couleur rouge par defaut */
   int mode = 0; /* Mode dessin par defaut */
@@ -75,11 +78,23 @@ int main(int argc, char** argv) {
             /* En mode selection de couleur on modifie l'indice de la couleur courante */
             currentColor = e.button.x * NB_COLORS / WINDOW_WIDTH;
           } else {
+		 if( e.button.button == SDL_BUTTON_RIGHT ) { 
+	                PointLink*  Link1 =AllocPointLink(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), COLORS[currentColor * 3], COLORS[currentColor * 3 + 1], COLORS[currentColor * 3 + 2]);
+			Link1->next = primitives->points;
+			AddPoint(Link1, &primitives->points);
+			
+		}
+		else{
             /* En mode dessin on ajoute un point dans la liste de la primitive courante */
-            AddPoint(AllocPointLink(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), COLORS[currentColor * 3], COLORS[currentColor * 3 + 1], COLORS[currentColor * 3 + 2]), &primitives->points);
+            	AddPoint(AllocPointLink(-1 + 2. * e.button.x / WINDOW_WIDTH, - (-1 + 2. * e.button.y / WINDOW_HEIGHT), COLORS[currentColor * 3], COLORS[currentColor * 3 + 1], COLORS[currentColor * 3 + 2]), &primitives->points);
+		}
           }
         break;
         
+
+
+	
+		
         case SDL_KEYDOWN:
           /* Maintenir espace appuyÃ© permet de passer en mode selection de couleur */
           if(e.key.keysym.sym == SDLK_SPACE) {
@@ -98,14 +113,11 @@ int main(int argc, char** argv) {
                 AddPrimitiveLink(AllocPrimitiveLink(GL_POINTS), &primitives);
                 break;
               case SDLK_l:
-                AddPrimitiveLink(AllocPrimitiveLink(GL_LINES), &primitives);
+                AddPrimitiveLink(AllocPrimitiveLink(GL_LINE_STRIP), &primitives);
                 break;
               case SDLK_t:
                 AddPrimitiveLink(AllocPrimitiveLink(GL_TRIANGLES), &primitives);
                 break;
-             case SDLK_b:
-		AddPrimitiveLink(AllocPrimitiveLink(GL_LINE_STRIP), &primitives);
-              	break:
               default:
                 break;
             }
@@ -185,6 +197,7 @@ PointLink* AllocPointLink(float x, float y, unsigned char r, unsigned char g, un
   return link;
 }
 
+
 void AddPoint(PointLink* link, PointList* list) {
   assert(link);
   assert(list);
@@ -195,6 +208,7 @@ void AddPoint(PointLink* link, PointList* list) {
     AddPoint(link, &(*list)->next);
   }
 }
+
 
 void DrawPoints(PointList list) {
   while(list) {
@@ -250,3 +264,6 @@ void DrawPrimitives(PrimitiveList list) {
     list = list->next;
   }
 }
+
+
+
