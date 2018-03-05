@@ -4,11 +4,26 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 static unsigned int WINDOW_WIDTH = 800;
 static unsigned int WINDOW_HEIGHT = 800;
 static const unsigned int BIT_PER_PIXEL = 32;
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
+
+    
+    const char* img0 = "0.png";
+    const char* img1 = "1.png";
+    const char* img2 = "2.png";
+    const char* img3 = "3.png";
+    const char* img4 = "4.png";
+    const char* img5 = "5.png";
+    const char* img6 = "6.png";
+    const char* img7 = "7.png";
+    const char* img8 = "8.png";
+    const char* img9 = "9.png";
+    const char* img10 = "colon.png";
+
 
 void resizeViewport() {
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -18,21 +33,9 @@ void resizeViewport() {
     SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_RESIZABLE);
 }
 
-const char* img0 = "0.png";
-const char* img1 = "1.png";
-const char* img2 = "2.png";
-const char* img3 = "3.png";
-const char* img4 = "4.png";
-const char* img5 = "5.png";
-const char* img6 = "6.png";
-const char* img7 = "7.png";
-const char* img8 = "8.png";
-const char* img9 = "9.png";
-const char* img10 = "colon.png";
+void saveHeure(int tab[]);
 
 int main(int argc, char** argv) {
-  SDL_Surface* s[10];
-  
 
     // Initialisation de la SDL
     if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -50,6 +53,12 @@ int main(int argc, char** argv) {
 
     
     // TODO: Chargement et traitement de la texture
+
+    SDL_Surface* s[11];
+
+    int i=0;
+    int tab[6];
+ 
     s[0]=IMG_Load(img0);
     s[1]=IMG_Load(img1);
     s[2]=IMG_Load(img2);
@@ -62,9 +71,7 @@ int main(int argc, char** argv) {
     s[9]=IMG_Load(img9);
     s[10]=IMG_Load(img10);
 
-    int i = 0;
-
-    while (i<10){
+    while (i<=10){
       printf("%d\n",i);
       if (s[i] == NULL){
 	printf("ERREUR CHARGEMENT IMG\n");
@@ -73,17 +80,18 @@ int main(int argc, char** argv) {
       i++;
     }
     
-    GLuint textureID[10];
-    glGenTextures(10,&textureID[0]);
+    GLuint textureID[11];
+    glGenTextures(11,&textureID[0]);
 
     i = 0;
     
     while (i<=10){
+      printf("Cfg des parametres");
     //Configuration des paramètres de texture
       glBindTexture(GL_TEXTURE_2D,textureID[i]);
       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
    
-    
+      printf("Envoi des données");
     //Envoi des données à la carte graphique
       glTexImage2D(
 		 GL_TEXTURE_2D,
@@ -95,9 +103,11 @@ int main(int argc, char** argv) {
 		 GL_RGBA,// A changer selon format de l'image
 		 GL_UNSIGNED_BYTE,
 		 s[i]->pixels);
-
+      
+      printf("Détacher la texture\n");
     //Détacher la texture de son point de bind
       glBindTexture(GL_TEXTURE_2D,0);
+      i++;
     }
 
 
@@ -108,6 +118,7 @@ int main(int argc, char** argv) {
       i++;
     }
 
+    printf("TEXTURE GENERÉE\n");
 
 
 	//Boucle de dessin
@@ -115,35 +126,167 @@ int main(int argc, char** argv) {
     int loop = 1;
     glClearColor(0.1, 0.1, 0.1 ,1.0);
     while(loop) {
-
         Uint32 startTime = SDL_GetTicks();
 
         // TODO: Code de dessin
-	glEnable(GL_TEXTURE_2D); // activation texturing
-	glBindTexture(GL_TEXTURE_2D,textureID[1]); //bind la texture à utiliser
+	   saveHeure(tab);
+	   printf(" %d%d : %d%d : %d%d\n",tab[0],tab[1],tab[2],tab[3],tab[4],tab[5]);
+     /* Affichage texture */
 
-        glClear(GL_COLOR_BUFFER_BIT);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
+	   /*SQUARE 0 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[0]]); //bind la texture à utiliser
 
-	//glRotatef(45,0.0,0.0,1.0);
+	   glClear(GL_COLOR_BUFFER_BIT);
+	   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
+
+	   //glRotatef(45,0.0,0.0,1.0);
 	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2f(-0.5,0.5);
-	glTexCoord2f(1,0);
-	glVertex2f(0.5,0.5);
-	glTexCoord2f(1,1);
-	glVertex2f(0.5,-0.5);
-	glTexCoord2f(0,1);
-	glVertex2f(-0.5,-0.5);
-	glEnd();
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(-0.80,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(-0.60,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(-0.60,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(-0.80,-0.10);
+	   glEnd();
 	
-	glDisable(GL_TEXTURE_2D); //desactivation sampling texture
-	glBindTexture(GL_TEXTURE_2D,0); //débind texture
-         
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
 
-        // Fin du code de dessin
+	   /*SQUARE 1 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[1]]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(-0.60,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(-0.40,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(-0.40,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(-0.60,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
 
+	   /*square : */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[10]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(-0.40,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(-0.30,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(-0.30,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(-0.40,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+	    /*square 2 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[2]]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(-0.30,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(-0.10,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(-0.10,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(-0.30,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+	   	    /*square 3 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[3]]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(-0.10,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(0.10,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(0.10,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(-0.10,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+	   /*square : */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[10]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(0.10,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(0.20,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(0.20,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(0.10,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+	   	   	    /*square 4 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[4]]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(0.20,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(0.40,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(0.40,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(0.20,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+	   	   	   	    /*square 5 */
+	   glEnable(GL_TEXTURE_2D); // activation texturing
+	   glBindTexture(GL_TEXTURE_2D,textureID[tab[5]]); //bind la texture à utiliser
+	   
+	   glBegin(GL_QUADS);
+	   glTexCoord2f(-1,0);
+	   glVertex2f(0.40,0.10);
+	   glTexCoord2f(0,0);
+	   glVertex2f(0.60,0.10);
+	   glTexCoord2f(0,1);
+	   glVertex2f(0.60,-0.10);
+	   glTexCoord2f(-1,1);
+	   glVertex2f(0.40,-0.10);
+	   glEnd();
+	
+	   glDisable(GL_TEXTURE_2D); //desactivation sampling texture
+	   glBindTexture(GL_TEXTURE_2D,0); //débind texture
+
+
+
+			
+    // Fin du code de dessin       
+           
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
 
@@ -172,6 +315,7 @@ int main(int argc, char** argv) {
     
 
     // TODO: Libération des données GPU
+
     i=0;
     while (i<=10){ 
       glDeleteTextures(1,&textureID[i]);
@@ -183,3 +327,57 @@ int main(int argc, char** argv) {
 
     return EXIT_SUCCESS;
 }
+
+
+
+void saveHeure(int tab[]){
+   time_t times;
+   struct tm *info;
+   int heure,minute,seconde,h1,h2,m1,m2,s1,s2;
+   time(&times);
+   info = gmtime(&times);
+   
+   /* Save time */
+   heure = (info->tm_hour+1)%24;
+   minute = (info->tm_min);
+   seconde = (info->tm_sec);
+
+
+   /*decomposition heure*/
+   if (heure >= 10){
+     h1 = heure/10;
+     h2 = heure - (heure/10)*10;
+   }
+   else{
+     h1 = 0;
+     h2 = heure;
+   }
+     tab[0] = h1;
+     tab[1] = h2;
+
+   /*decomposition minute*/
+   if (minute>=10){
+       m1 = minute/10;
+       m2 = minute - (minute/10)*10;
+     }
+   else{
+     m1 = 0;
+     m2 = minute;
+   }
+   tab[2] = m1;
+   tab[3] = m2;
+
+   /*decomposition seconde*/
+   if (seconde>=10){
+     s1 = seconde/10;
+     s2 = seconde - (seconde/10)*10;
+   }
+   else{
+     s1 = 0;
+     s2 = seconde;
+   }
+   tab[4] = s1;
+   tab[5] = s2;   
+}
+
+
