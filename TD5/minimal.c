@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 
-/*EXERCICE 2*/
-
-static unsigned int WINDOW_WIDTH = 800;
+static unsigned int WINDOW_WIDTH = 600;
 static unsigned int WINDOW_HEIGHT = 600;
 
 
@@ -21,7 +19,7 @@ static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 void drawSquare();
 void drawLandmark();
 void drawCircle();
-void draw();
+void drawClock();
 
 void resize(int width , int height ){
   glViewport(0,0,width,height);
@@ -40,7 +38,7 @@ void rescale(){
 
  
 int main(int argc, char** argv) {
-  int key=SDLK_l;
+
 
 
     /* Initialisation de la SDL */
@@ -56,7 +54,7 @@ int main(int argc, char** argv) {
     }
     
     /* Titre de la fenêtre */
-    SDL_WM_SetCaption("CHANGEMENT DU TITRE :D", NULL);
+    SDL_WM_SetCaption("HORLOGE", NULL);
     glClear(GL_COLOR_BUFFER_BIT);
     /* Boucle d'affichage */
     rescale();
@@ -65,8 +63,7 @@ int main(int argc, char** argv) {
             
         /* Placer ici le code de dessin */
     glColor3ub(150,100,0);
-    drawSquare();
-
+    drawClock();
 
 	
     while(loop) {
@@ -94,14 +91,7 @@ int main(int argc, char** argv) {
 
                 /* Clic souris */
                 case SDL_MOUSEBUTTONUP:
-		  glClear(GL_COLOR_BUFFER_BIT);
-		  int x = e.button.x/100;
-		  int y = e.button.y/100;
-		  printf(" On a x = %d et y = %d \n",x,y);
-		  glTranslatef(x,y,0);
-		  glColor3ub(150,100,0);
-                  drawSquare();
-		  glTranslatef(-x,-y,0);
+		  
 		 
                     break;
 
@@ -120,18 +110,8 @@ int main(int argc, char** argv) {
 	     
                 /* Touche clavier */
                 case SDL_KEYDOWN:
-		  key = e.key.keysym.sym;
-		  /*Touche q pour quitter*/
-		  if (e.key.keysym.sym == SDLK_q){
-		    loop = 0;
-		    break;
-		  }
-		 
-		   printf("touche pressée (code = %d)\n", e.key.keysym.sym);
-                    break;
-
-                default:
-                    break;
+                	break;
+	
             }
         }
 
@@ -188,8 +168,9 @@ void drawLandmark(){
 
 
 void drawCircle(){
+	
  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,0);
- glBegin(GL_POINTS);
+ glBegin(GL_POLYGON);
  for(int i=0;i<1000;++i)
   {
   glVertex2f(cos(2*3.14159*i/1000.0)*0.5,sin(2*3.14159*i/1000.0)*0.5);
@@ -197,19 +178,63 @@ void drawCircle(){
  glEnd();
 }
 
-
-void draw(int key){
- 
-  if (key == SDLK_s){
-    drawSquare();
-  }
-  if (key == SDLK_l){
-    drawLandmark();
-  }
-  if (key == SDLK_c){
-    drawCircle();
-  }
+	
+void drawClockLine(){
+	int i = 0;
+	glPushMatrix();
+	while (i<12){
+		glRotatef(30,0,0,1);
+		glBegin(GL_LINES);
+			glVertex2f(6,0);
+			glVertex2f(7,0);
+		glEnd();
+		i++;
+	}
+	glPopMatrix();
 }
 
+void drawBigHand(){
+	glColor3ub(0,0,0);
+	glBegin(GL_POLYGON);
+		glVertex2f(0,0);
+		glVertex2f(0.2,0);
+		glVertex2f(0.2,0);
+		glVertex2f(0.2,7);
+		glVertex2f(0.2,7);
+		glVertex2f(0,7);
+		glVertex2f(0,7);
+		glVertex2f(0,0);
+	glEnd();
+
+}
+
+void drawSecondHand(){
+	glColor3ub(255,0,0);
+	glBegin(GL_LINES);
+		glVertex2f(0,0);
+		glVertex2f(3,6);
+	glEnd();
+}
+
+void drawClock(){
+
+	glColor3ub(255,255,255);
+	glPushMatrix();
+		glScalef(15,15,0);
+		drawCircle();
+	glPopMatrix();
+	glColor3ub(0,0,0);
+	
+	drawClockLine();
+	drawBigHand();
+	drawSecondHand();
+
+	glPushMatrix();
+		glColor3ub(0,0,0);
+		glScalef(0.5,0.5,0);
+		drawCircle();
+	glPopMatrix();
+
+}
   
   
